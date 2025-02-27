@@ -7,26 +7,124 @@
 </head>
 <body>
   <h1>Quark Simulation: Forming Mesons and Baryons</h1>
+  
+  <!-- Sparkles Info Button -->
+  <button id="sparklesInfoButton" class="info-button">What are the sparkles?</button>
+  
+  <!-- Collapsible, beautified instructions drop-down -->
+  <details>
+    <summary>Instructions</summary>
+    <ul>
+      <li>Click any of the quark or antiquark buttons to generate a quark.</li>
+      <li>Drag and drop the quarks within the simulation area.</li>
+      <li>When two quarks (or particles) are close enough, a card will pop up asking if you want to merge them.</li>
+      <li>If the merged combination forms a known meson or baryon, it will display the particle's name along with its full quark composition.</li>
+      <li>If the combination is not recognized, it will be labeled as "unknown."</li>
+      <li>You can merge up to 5 quarks per particle and have up to 5 particles on the board.</li>
+      <li>Use the "Clear Board" button to start over.</li>
+    </ul>
+  </details>
+  
   <div id="controls">
     <h2>Create Quark / Antiquark</h2>
-    <!-- Quark buttons -->
-    <button class="create-quark" data-type="u">u</button>
-    <button class="create-quark" data-type="d">d</button>
-    <button class="create-quark" data-type="c">c</button>
-    <button class="create-quark" data-type="s">s</button>
-    <button class="create-quark" data-type="t">t</button>
-    <button class="create-quark" data-type="b">b</button>
+    <!-- Quark buttons with full names -->
+    <button class="create-quark" data-type="Up">Up</button>
+    <button class="create-quark" data-type="Down">Down</button>
+    <button class="create-quark" data-type="Charm">Charm</button>
+    <button class="create-quark" data-type="Strange">Strange</button>
+    <button class="create-quark" data-type="Top">Top</button>
+    <button class="create-quark" data-type="Bottom">Bottom</button>
     <!-- Antiquark buttons -->
-    <button class="create-quark" data-type="anti-u">anti-u</button>
-    <button class="create-quark" data-type="anti-d">anti-d</button>
-    <button class="create-quark" data-type="anti-c">anti-c</button>
-    <button class="create-quark" data-type="anti-s">anti-s</button>
-    <button class="create-quark" data-type="anti-t">anti-t</button>
-    <button class="create-quark" data-type="anti-b">anti-b</button>
+    <button class="create-quark" data-type="Anti-Up">Anti-Up</button>
+    <button class="create-quark" data-type="Anti-Down">Anti-Down</button>
+    <button class="create-quark" data-type="Anti-Charm">Anti-Charm</button>
+    <button class="create-quark" data-type="Anti-Strange">Anti-Strange</button>
+    <button class="create-quark" data-type="Anti-Top">Anti-Top</button>
+    <button class="create-quark" data-type="Anti-Bottom">Anti-Bottom</button>
+    <!-- Additional Controls -->
+    <button id="clearButton">Clear Board</button>
+    <button id="knownParticlesButton">Known Particles</button>
   </div>
   
-  <!-- Simulation area -->
+  <!-- Simulation Area -->
   <div id="simulation-area"></div>
+  
+  <!-- Sparkles Container -->
+  <div id="sparkles-container"></div>
+  
+  <!-- Merge Modal Card -->
+  <div id="mergeModal" class="modal hidden">
+    <div class="modal-content">
+      <p>Merge these quarks?</p>
+      <div class="modal-buttons">
+        <button id="mergeYes">Yes</button>
+        <button id="mergeCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Known Particles Modal -->
+  <div id="knownParticlesModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Known Particles</h3>
+      <div class="known-particle">
+        <img src="images/pi-plus.png" alt="π+">
+        <p>π+ : Up + Anti-Down</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/pi-minus.png" alt="π-">
+        <p>π- : Down + Anti-Up</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/pi-zero.png" alt="π0">
+        <p>π0 : (Up + Anti-Up) or (Down + Anti-Down)</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/jpsi.png" alt="J/ψ">
+        <p>J/ψ : Charm + Anti-Charm</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/phi.png" alt="φ">
+        <p>φ : Strange + Anti-Strange</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/proton.png" alt="Proton">
+        <p>Proton : Up + Up + Down</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/neutron.png" alt="Neutron">
+        <p>Neutron : Down + Down + Up</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/delta-plus-plus.png" alt="Delta++">
+        <p>Delta++ : Up + Up + Up</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/delta-minus.png" alt="Delta-">
+        <p>Delta- : Down + Down + Down</p>
+      </div>
+      <div class="known-particle">
+        <img src="images/lambda.png" alt="Lambda">
+        <p>Lambda : Up + Down + Strange</p>
+      </div>
+      <div class="modal-buttons">
+        <button id="closeKnownParticles">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sparkles Info Modal -->
+  <div id="sparklesInfoModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Sparkles Info</h3>
+      <p>
+        The sparkles represent neutrinos – elusive particles that rarely interact with matter. They symbolize the high-energy, dynamic nature of particle physics.
+      </p>
+      <div class="modal-buttons">
+        <button id="closeSparklesInfo">Close</button>
+      </div>
+    </div>
+  </div>
   
   <script src="script.js"></script>
 </body>
