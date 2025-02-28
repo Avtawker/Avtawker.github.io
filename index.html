@@ -11,7 +11,7 @@
   <!-- Sparkles Info Button -->
   <button id="sparklesInfoButton" class="info-button">What are the sparkles?</button>
   
-  <!-- Collapsible, beautified instructions drop-down -->
+  <!-- Collapsible instructions drop-down -->
   <details>
     <summary>Instructions</summary>
     <ul>
@@ -21,29 +21,31 @@
       <li>If the merged combination forms a known meson or baryon, it will display the particle's name along with its full quark composition.</li>
       <li>If the combination is not recognized, it will be labeled as "unknown."</li>
       <li>You can merge up to 5 quarks per particle and have up to 5 particles on the board.</li>
-      <li>Use the "Clear Board" button to start over.</li>
     </ul>
   </details>
   
   <div id="controls">
     <h2>Create Quark / Antiquark</h2>
-    <!-- Quark buttons with full names -->
-    <button class="create-quark" data-type="Up">Up</button>
-    <button class="create-quark" data-type="Down">Down</button>
-    <button class="create-quark" data-type="Charm">Charm</button>
-    <button class="create-quark" data-type="Strange">Strange</button>
-    <button class="create-quark" data-type="Top">Top</button>
-    <button class="create-quark" data-type="Bottom">Bottom</button>
-    <!-- Antiquark buttons -->
-    <button class="create-quark" data-type="Anti-Up">Anti-Up</button>
-    <button class="create-quark" data-type="Anti-Down">Anti-Down</button>
-    <button class="create-quark" data-type="Anti-Charm">Anti-Charm</button>
-    <button class="create-quark" data-type="Anti-Strange">Anti-Strange</button>
-    <button class="create-quark" data-type="Anti-Top">Anti-Top</button>
-    <button class="create-quark" data-type="Anti-Bottom">Anti-Bottom</button>
-    <!-- Additional Controls -->
-    <button id="clearButton">Clear Board</button>
-    <button id="knownParticlesButton">Known Particles</button>
+    <!-- First row: Quark buttons with full names -->
+    <div class="button-row">
+      <button class="create-quark" data-type="Up">Up</button>
+      <button class="create-quark" data-type="Down">Down</button>
+      <button class="create-quark" data-type="Charm">Charm</button>
+      <button class="create-quark" data-type="Strange">Strange</button>
+      <button class="create-quark" data-type="Top">Top</button>
+      <button class="create-quark" data-type="Bottom">Bottom</button>
+      <button class="create-quark" data-type="Anti-Up">Anti-Up</button>
+      <button class="create-quark" data-type="Anti-Down">Anti-Down</button>
+      <button class="create-quark" data-type="Anti-Charm">Anti-Charm</button>
+      <button class="create-quark" data-type="Anti-Strange">Anti-Strange</button>
+      <button class="create-quark" data-type="Anti-Top">Anti-Top</button>
+      <button class="create-quark" data-type="Anti-Bottom">Anti-Bottom</button>
+    </div>
+    <!-- Second row: Extra controls -->
+    <div class="button-row">
+      <button id="clearButton">Clear Board</button>
+      <button id="knownParticlesButton">Known Particles</button>
+    </div>
   </div>
   
   <!-- Simulation Area -->
@@ -68,43 +70,43 @@
     <div class="modal-content">
       <h3>Known Particles</h3>
       <div class="known-particle">
-        <img src="images/pi-plus.png" alt="π+">
+        <img src="particle.webp" alt="π+">
         <p>π+ : Up + Anti-Down</p>
       </div>
       <div class="known-particle">
-        <img src="images/pi-minus.png" alt="π-">
+        <img src="particle.webp" alt="π-">
         <p>π- : Down + Anti-Up</p>
       </div>
       <div class="known-particle">
-        <img src="images/pi-zero.png" alt="π0">
+        <img src="particle.webp" alt="π0">
         <p>π0 : (Up + Anti-Up) or (Down + Anti-Down)</p>
       </div>
       <div class="known-particle">
-        <img src="images/jpsi.png" alt="J/ψ">
+        <img src="particle.webp" alt="J/ψ">
         <p>J/ψ : Charm + Anti-Charm</p>
       </div>
       <div class="known-particle">
-        <img src="images/phi.png" alt="φ">
+        <img src="particle.webp" alt="φ">
         <p>φ : Strange + Anti-Strange</p>
       </div>
       <div class="known-particle">
-        <img src="images/proton.png" alt="Proton">
+        <img src="particle.webp" alt="Proton">
         <p>Proton : Up + Up + Down</p>
       </div>
       <div class="known-particle">
-        <img src="images/neutron.png" alt="Neutron">
+        <img src="particle.webp" alt="Neutron">
         <p>Neutron : Down + Down + Up</p>
       </div>
       <div class="known-particle">
-        <img src="images/delta-plus-plus.png" alt="Delta++">
+        <img src="particle.webp" alt="Delta++">
         <p>Delta++ : Up + Up + Up</p>
       </div>
       <div class="known-particle">
-        <img src="images/delta-minus.png" alt="Delta-">
+        <img src="particle.webp" alt="Delta-">
         <p>Delta- : Down + Down + Down</p>
       </div>
       <div class="known-particle">
-        <img src="images/lambda.png" alt="Lambda">
+        <img src="particle.webp" alt="Lambda">
         <p>Lambda : Up + Down + Strange</p>
       </div>
       <div class="modal-buttons">
