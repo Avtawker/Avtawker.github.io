@@ -314,51 +314,83 @@
     animation: sparkleMove 5s linear infinite;
   }
 
-  /* Draggable Items (Quarks & Particles) */
+/* Draggable Items (Quarks & Particles) */
 .draggable {
     position: absolute;
-    padding: 10px;
-    min-width: 40px;
-    min-height: 40px;
-    line-height: 1;
-    text-align: center;
-    border: none;
-    border-radius: 50%;
-    cursor: move;
-    user-select: none;
-    color: var(--text-color);
-    background-color: rgba(248, 215, 218, 0.8);
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-    /* Soft fuzzy edges */
-    filter: blur(0.5px);
-    display: flex;
+    /* Use inline-flex so text naturally wraps without clipping */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    white-space: nowrap;
+    
+    /* Some padding to give room around text */
+    padding: 8px;
+    
+    /* Let shape expand as needed */
+    min-width: 40px;   /* ensures a minimum size */
+    max-width: 120px;  /* prevents it from becoming too wide */
+    
+    /* Remove hidden overflow to avoid text clipping */
+    overflow: visible;
+    
+    /* Make it “roundish” (circle if short text, ellipse if longer) */
+    border-radius: 50%;
+    
+    /* Soft fuzzy background */
+    background-color: rgba(248, 215, 218, 0.8);
+    filter: blur(0.3px);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    
+    /* White text with glow for readability */
+    color: #fff;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.8),
+                 0 0 6px rgba(255, 255, 255, 0.8);
+    font-size: 0.85em;
+    
+    /* Allow wrapping and break lines if text is long */
+    white-space: normal;
+    word-break: break-word;
+    
+    /* Some transition for drag/hover niceties */
+    transition: transform 0.3s ease;
+    cursor: move;
+    user-select: none;
   }
   
-  /* Specific styling for merged particles */
+  /* Additional styling for merged (multi-quark) particles */
   .draggable.particle {
-    position: relative;
-    /* Ensure text fits inside; adjust font-size if needed */
-    font-size: 0.8em;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    /* Slightly smaller or adjust as needed */
+    font-size: 0.75em;
+    padding: 8px;
+    position: relative; /* for the lamp effect ::before */
   }
   
-  /* Lamp-style glow effect (360°) using a pseudo-element */
+  /* Lamp-style glow (360°) around the particle */
   .draggable.particle::before {
     content: "";
     position: absolute;
-    top: -20%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    
+    /* Place the glow centered on the particle */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Expand beyond the particle’s size to create a soft halo */
+    width: 200%;
+    height: 200%;
+    
+    /* Radial gradient for lamp effect */
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.3) 20%,
+      rgba(255, 255, 255, 0) 80%
+    );
+    
     border-radius: 50%;
-    z-index: -1;
+    pointer-events: none;
+    z-index: -1; /* behind the particle text */
   }
+  
+  
   
   
   /* Keyframes for sparkles floating around */
