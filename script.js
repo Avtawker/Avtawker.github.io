@@ -1,11 +1,3 @@
-/****************************
- * script.js
- * Fixes:
- *  - Sparkles live longer and appear at a slower pace, with a large initial batch.
- *  - Known particles recognized by canonical sorting of quarks (handles permutations).
- *  - Merge logic remains on drop (mouseup), not while dragging.
- ****************************/
-
 // Grab references to main elements
 const simulationArea = document.getElementById('simulation-area');
 const mergeModal = document.getElementById('mergeModal');
@@ -30,14 +22,11 @@ let mergeCandidates = { item1: null, item2: null };
  * This ensures any permutation is recognized as the same composition.
  */
 function canonicalizeQuarks(arr) {
-  // Example: ["Up","Down"] => ["Down","Up"] => "Down+Up"
   return arr.slice().sort().join('+');
 }
 
 /**
  * Known compositions (in sorted form) -> Particle info
- * Make sure each key is the alphabetical sort of its quarks.
- * e.g. "Down+Up+Up" for Proton (any permutation recognized).
  */
 const knownParticlesMap = {
   // Mesons (2 quarks)
@@ -124,7 +113,6 @@ function enableDragging(element) {
  * Checks if an element (on drop) is close enough to any other element to prompt a merge.
  */
 function checkForMerge(element) {
-  // If merge modal is already visible, skip
   if (!mergeModal.classList.contains('hidden')) return;
 
   const rect1 = element.getBoundingClientRect();
@@ -255,14 +243,16 @@ closeSparklesInfoBtn.addEventListener('click', () => {
 
 // ----------------- SPARKLES FUNCTIONALITY -----------------
 
-/**
- * Creates one sparkle at (x,y). Lives 30s, then removed.
- */
 function createSparkle(x, y) {
   const sparkle = document.createElement('div');
   sparkle.classList.add('sparkle');
   sparkle.style.left = x + 'px';
   sparkle.style.top = y + 'px';
+
+  // Each sparkle has a random animation delay & duration
+  sparkle.style.animationDelay = Math.random() * 5 + 's';         // up to 5s delay
+  sparkle.style.animationDuration = (10 + Math.random() * 10) + 's'; // 10-20s total
+
   sparklesContainer.appendChild(sparkle);
 
   // Live for 30 seconds
@@ -271,9 +261,6 @@ function createSparkle(x, y) {
   }, 30000);
 }
 
-/**
- * Generate a sparkle at a random screen position.
- */
 function generateRandomSparkle() {
   const x = Math.random() * window.innerWidth;
   const y = Math.random() * window.innerHeight;
@@ -285,5 +272,5 @@ for (let i = 0; i < 50; i++) {
   generateRandomSparkle();
 }
 
-// Generate new sparkles at a slower pace (every 2s)
+// Generate new sparkles every 2s
 setInterval(generateRandomSparkle, 2000);
