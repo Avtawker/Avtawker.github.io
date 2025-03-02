@@ -137,7 +137,6 @@ details ul {
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* Make the shape resize to text length */
     width: auto;
     height: auto;
     min-width: 40px;
@@ -149,7 +148,6 @@ details ul {
     filter: blur(0.3px);
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
     
-    /* Keep text on one line so it doesn’t leak out */
     white-space: nowrap;
     
     /* Wobble animation for dynamic movement */
@@ -175,52 +173,52 @@ details ul {
   
 /* Known Particle Unique Colors & Readable Text */
 .pi-plus {
-    background-color: rgba(255, 182, 193, 0.7); /* light pink */
+    background-color: rgba(255, 182, 193, 0.7);
     box-shadow: 0 0 10px rgba(255,105,180,0.8);
     color: #121212;
 }
 .pi-minus {
-    background-color: rgba(173, 216, 230, 0.7); /* light blue */
+    background-color: rgba(173, 216, 230, 0.7);
     box-shadow: 0 0 10px rgba(135,206,235,0.8);
     color: #121212;
 }
 .pi-zero {
-    background-color: rgba(211, 211, 211, 0.7); /* light gray */
+    background-color: rgba(211, 211, 211, 0.7);
     box-shadow: 0 0 10px rgba(169,169,169,0.8);
     color: #121212;
 }
 .jpsi {
-    background-color: rgba(100, 149, 237, 0.7); /* cornflower blue */
+    background-color: rgba(100, 149, 237, 0.7);
     box-shadow: 0 0 10px rgba(65,105,225,0.8);
     color: #fff;
 }
 .phi {
-    background-color: rgba(221, 160, 221, 0.7); /* plum */
+    background-color: rgba(221, 160, 221, 0.7);
     box-shadow: 0 0 10px rgba(186,85,211,0.8);
     color: #121212;
 }
 .proton {
-    background-color: rgba(255, 204, 203, 0.7); /* light red */
+    background-color: rgba(255, 204, 203, 0.7);
     box-shadow: 0 0 10px rgba(255,0,0,0.8);
     color: #121212;
 }
 .neutron {
-    background-color: rgba(240, 230, 140, 0.7); /* khaki */
+    background-color: rgba(240, 230, 140, 0.7);
     box-shadow: 0 0 10px rgba(255,215,0,0.8);
     color: #121212;
 }
 .delta-plus-plus {
-    background-color: rgba(255, 165, 0, 0.7); /* orange */
+    background-color: rgba(255, 165, 0, 0.7);
     box-shadow: 0 0 10px rgba(255,140,0,0.8);
     color: #121212;
 }
 .delta-minus {
-    background-color: rgba(255, 99, 71, 0.7); /* tomato */
+    background-color: rgba(255, 99, 71, 0.7);
     box-shadow: 0 0 10px rgba(255,69,0,0.8);
     color: #fff;
 }
 .lambda {
-    background-color: rgba(230, 230, 250, 0.7); /* lavender */
+    background-color: rgba(230, 230, 250, 0.7);
     box-shadow: 0 0 10px rgba(147,112,219,0.8);
     color: #121212;
 }
@@ -242,11 +240,13 @@ details ul {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.75);
+    /* Make it translucent with blur and a high z-index so it covers quarks */
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    z-index: 10000; /* above any draggable (which might reach 9999) */
 }
   
 .modal.hidden {
@@ -254,7 +254,8 @@ details ul {
 }
   
 .modal-content {
-    background: var(--panel-bg);
+    /* Slightly opaque background for readability */
+    background-color: rgba(30, 30, 30, 0.8);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 20px;
@@ -335,7 +336,10 @@ details ul {
     border-radius: 50%;
     opacity: 0.8;
     box-shadow: 0 0 6px var(--accent-color);
-    animation: sparkleMove 10s linear infinite; /* Slower float if desired */
+    /* Each sparkle uses random delay & duration set in JS */
+    animation-name: sparkleMove;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
   
 /* Keyframes for Sparkles */
