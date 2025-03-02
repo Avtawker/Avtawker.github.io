@@ -1,316 +1,289 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const simulationArea = document.getElementById("simulation-area");
-    const createButtons = document.querySelectorAll(".create-quark");
-    const clearButton = document.getElementById("clearButton");
-    const knownParticlesButton = document.getElementById("knownParticlesButton");
-    const sparklesInfoButton = document.getElementById("sparklesInfoButton");
-  
-    // Modal elements
-    const mergeModal = document.getElementById("mergeModal");
-    const mergeYesButton = document.getElementById("mergeYes");
-    const mergeCancelButton = document.getElementById("mergeCancel");
-    const knownParticlesModal = document.getElementById("knownParticlesModal");
-    const closeKnownParticles = document.getElementById("closeKnownParticles");
-    const sparklesInfoModal = document.getElementById("sparklesInfoModal");
-    const closeSparklesInfo = document.getElementById("closeSparklesInfo");
-  
-    // Global merge flag and candidate
-    let mergeInProgress = false;
-    let mergeCandidate = { elem1: null, elem2: null };
-  
-    // Attach event listeners for create buttons
-    createButtons.forEach(button => {
-      button.addEventListener("click", function() {
-        const type = button.getAttribute("data-type");
-        createQuark(type);
-      });
-    });
-  
-    // Clear board functionality
-    clearButton.addEventListener("click", function() {
-      simulationArea.innerHTML = "";
-      hideMergeModal();
-      mergeInProgress = false;
-    });
-  
-    // Known Particles modal functionality
-    knownParticlesButton.addEventListener("click", function() {
-      knownParticlesModal.classList.remove("hidden");
-    });
-    closeKnownParticles.addEventListener("click", function() {
-      knownParticlesModal.classList.add("hidden");
-    });
-  
-    // Sparkles Info modal functionality
-    sparklesInfoButton.addEventListener("click", function() {
-      sparklesInfoModal.classList.remove("hidden");
-    });
-    closeSparklesInfo.addEventListener("click", function() {
-      sparklesInfoModal.classList.add("hidden");
-    });
-  
-    // Merge Modal event listeners
-    mergeYesButton.addEventListener("click", function() {
-      if (mergeCandidate.elem1 && mergeCandidate.elem2) {
-        mergeElements(mergeCandidate.elem1, mergeCandidate.elem2);
-      }
-      hideMergeModal();
-      mergeInProgress = false;
-      mergeCandidate = { elem1: null, elem2: null };
-    });
-    mergeCancelButton.addEventListener("click", function() {
-      hideMergeModal();
-      mergeInProgress = false;
-      mergeCandidate = { elem1: null, elem2: null };
-    });
-  
-    function hideMergeModal() {
-      mergeModal.classList.add("hidden");
-    }
-    function showMergeModal(elem1, elem2) {
-      mergeCandidate.elem1 = elem1;
-      mergeCandidate.elem2 = elem2;
-      mergeModal.classList.remove("hidden");
-    }
-  
-    // Generate sparkles (neutrino-like sparkles)
-    function generateSparkles() {
-      const sparklesContainer = document.getElementById("sparkles-container");
-      const sparkleCount = 30;
-      for (let i = 0; i < sparkleCount; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.classList.add("sparkle");
-        // Set random initial position
-        sparkle.style.top = Math.random() * 100 + "%";
-        sparkle.style.left = Math.random() * 100 + "%";
-        // Set random animation duration and delay
-        const duration = Math.random() * 3 + 3; // 3 to 6 seconds
-        const delay = Math.random() * 5; // 0 to 5 seconds
-        sparkle.style.animationDuration = duration + "s";
-        sparkle.style.animationDelay = delay + "s";
-        sparklesContainer.appendChild(sparkle);
-      }
-    }
-    generateSparkles();
-  
-    // Function to apply a random slight wobble animation to an element
-    function applyWobble(element) {
-      const duration = (Math.random() * 2 + 3).toFixed(2) + "s"; // between 3 and 5 seconds
-      const delay = (Math.random() * 2).toFixed(2) + "s"; // between 0 and 2 seconds
-      element.style.animation = `wobble ${duration} ease-in-out ${delay} infinite`;
-    }
-  
-    // Function to create a quark element
-    function createQuark(type) {
-      const quark = document.createElement("div");
-      quark.classList.add("draggable", "quark");
-      quark.textContent = type;
-      // Store the composition as a JSON array (starts with one quark)
-      quark.dataset.composition = JSON.stringify([type]);
-  
-      // Place the quark at a random position within the simulation area
-      const areaRect = simulationArea.getBoundingClientRect();
-      const x = Math.random() * (areaRect.width - 50);
-      const y = Math.random() * (areaRect.height - 50);
-      quark.style.left = x + "px";
-      quark.style.top = y + "px";
-  
-      simulationArea.appendChild(quark);
-      applyWobble(quark);
-      makeDraggable(quark);
-    }
-  
-    // Enable drag-and-drop for a given element
-    function makeDraggable(element) {
-      let offsetX = 0;
-      let offsetY = 0;
-      let isDragging = false;
-  
-      element.addEventListener("mousedown", function(e) {
-        isDragging = true;
-        offsetX = e.clientX - element.getBoundingClientRect().left;
-        offsetY = e.clientY - element.getBoundingClientRect().top;
-        element.style.zIndex = 1000; // Bring to front
-        // Pause wobble during drag
-        element.style.animationPlayState = "paused";
-      });
-  
-      document.addEventListener("mousemove", function(e) {
-        if (isDragging) {
-          const areaRect = simulationArea.getBoundingClientRect();
-          let x = e.clientX - areaRect.left - offsetX;
-          let y = e.clientY - areaRect.top - offsetY;
-          // Constrain movement within the simulation area
-          x = Math.max(0, Math.min(x, areaRect.width - element.offsetWidth));
-          y = Math.max(0, Math.min(y, areaRect.height - element.offsetHeight));
-          element.style.left = x + "px";
-          element.style.top = y + "px";
-        }
-      });
-  
-      document.addEventListener("mouseup", function(e) {
-        if (isDragging) {
-          isDragging = false;
-          element.style.zIndex = "";
-          element.style.animationPlayState = "running"; // Resume wobble
-          // Check for merge if no merge modal is already active
-          if (!mergeInProgress) {
-            checkForMerge(element);
-          }
-        }
-      });
-    }
-  
-    // When an element is dropped, check for nearby draggable elements (collision detection)
-    function checkForMerge(element) {
-      const draggables = document.querySelectorAll(".draggable");
-      const threshold = 50; // Merge if centers are within 50px
-      const elemRect = element.getBoundingClientRect();
-      const elemCenter = {
-        x: elemRect.left + elemRect.width / 2,
-        y: elemRect.top + elemRect.height / 2
-      };
-  
-      for (let other of draggables) {
-        if (other === element) continue;
-        const otherRect = other.getBoundingClientRect();
-        const otherCenter = {
-          x: otherRect.left + otherRect.width / 2,
-          y: otherRect.top + otherRect.height / 2
-        };
-        const distance = Math.hypot(elemCenter.x - otherCenter.x, elemCenter.y - otherCenter.y);
-        if (distance < threshold) {
-          mergeInProgress = true;
-          showMergeModal(element, other);
-          break;
-        }
-      }
-    }
-  
-    // Merge two elements (which can be free quarks or already merged particles)
-    function mergeElements(elem1, elem2) {
-      // Parse their compositions (each is an array of quark types, e.g., "Up", "Anti-Down", etc.)
-      const comp1 = JSON.parse(elem1.dataset.composition);
-      const comp2 = JSON.parse(elem2.dataset.composition);
-  
-      // Ensure that the total number of quarks does not exceed 5
-      if (comp1.length + comp2.length > 5) {
-        alert("Cannot merge: exceeds maximum of 5 quarks per particle.");
-        return;
-      }
-  
-      // Check if a new merged particle would be created.
-      // (A free quark has class "quark" only; a merged group has class "particle".)
-      const isElem1Particle = elem1.classList.contains("particle");
-      const isElem2Particle = elem2.classList.contains("particle");
-      if (!isElem1Particle && !isElem2Particle) {
-        const currentParticles = document.querySelectorAll(".particle").length;
-        if (currentParticles >= 5) {
-          alert("Maximum number of particles reached.");
-          return;
-        }
-      }
-      
-      // Combine the compositions
-      const newComp = comp1.concat(comp2);
-      const particleName = getParticleName(newComp);
-  
-      // Calculate the new element's position (average of the two positions)
-      const rect1 = elem1.getBoundingClientRect();
-      const rect2 = elem2.getBoundingClientRect();
-      const areaRect = simulationArea.getBoundingClientRect();
-      const newX = ((rect1.left + rect2.left) / 2) - areaRect.left;
-      const newY = ((rect1.top + rect2.top) / 2) - areaRect.top;
-  
-      // Remove the merged elements from the simulation area
-      if (elem1.parentNode) elem1.parentNode.removeChild(elem1);
-      if (elem2.parentNode) elem2.parentNode.removeChild(elem2);
-  
-      // Create the new merged particle element
-      const newElem = document.createElement("div");
-      newElem.classList.add("draggable", "particle");
-      // Always show the particle's name and its full quark composition
-      newElem.textContent = particleName + " (" + newComp.join(", ") + ")";
-      newElem.dataset.composition = JSON.stringify(newComp);
-      newElem.style.left = newX + "px";
-      newElem.style.top = newY + "px";
-  
-      // If the particle is known, add a specific CSS class to change its color and glow.
-      if (particleName !== "unknown" && particleName !== "unknown meson" && particleName !== "unknown baryon") {
-        const particleClassMap = {
-          "π+": "pi-plus",
-          "π-": "pi-minus",
-          "π0": "pi-zero",
-          "J/ψ": "jpsi",
-          "φ": "phi",
-          "Proton": "proton",
-          "Neutron": "neutron",
-          "Delta++": "delta-plus-plus",
-          "Delta-": "delta-minus",
-          "Lambda": "lambda"
-        };
-        if (particleClassMap[particleName]) {
-          newElem.classList.add(particleClassMap[particleName]);
-        }
-      }
-  
-      simulationArea.appendChild(newElem);
-      applyWobble(newElem);
-      makeDraggable(newElem);
-    }
-  
-    // Determine the particle name based on its quark composition.
-    // Valid mesons (2 items: one quark and one antiquark) and baryons (3 items: all quarks) are recognized.
-    // All other combinations (including 4 or 5) are labeled as "unknown".
-    function getParticleName(composition) {
-      // MESONS: Exactly 2 items with one being an antiquark.
-      if (composition.length === 2) {
-        const hasAnti = composition.some(q => q.startsWith("Anti-"));
-        const hasQuark = composition.some(q => !q.startsWith("Anti-"));
-        if (hasAnti && hasQuark) {
-          if (composition.includes("Up") && composition.includes("Anti-Down")) {
-            return "π+";
-          }
-          if (composition.includes("Down") && composition.includes("Anti-Up")) {
-            return "π-";
-          }
-          if ((composition.includes("Up") && composition.includes("Anti-Up")) ||
-              (composition.includes("Down") && composition.includes("Anti-Down"))) {
-            return "π0";
-          }
-          if (composition.includes("Charm") && composition.includes("Anti-Charm")) {
-            return "J/ψ";
-          }
-          if (composition.includes("Strange") && composition.includes("Anti-Strange")) {
-            return "φ";
-          }
-          return "unknown meson";
-        }
-      }
-  
-      // BARYONS: Exactly 3 items and all are quarks (no antiquarks)
-      if (composition.length === 3 && composition.every(q => !q.startsWith("Anti-"))) {
-        const sorted = composition.slice().sort();
-        const key = sorted.join(",");
-        if (key === ["Down", "Up", "Up"].sort().join(",")) {
-          return "Proton";
-        }
-        if (key === ["Down", "Down", "Up"].sort().join(",")) {
-          return "Neutron";
-        }
-        if (key === ["Up", "Up", "Up"].sort().join(",")) {
-          return "Delta++";
-        }
-        if (key === ["Down", "Down", "Down"].sort().join(",")) {
-          return "Delta-";
-        }
-        if (key === ["Down", "Strange", "Up"].sort().join(",")) {
-          return "Lambda";
-        }
-        return "unknown baryon";
-      }
-  
-      return "unknown";
+/****************************
+ * script.js
+ * Fixes:
+ *  - Sparkles live longer and appear at a slower pace, with a large initial batch.
+ *  - Known particles recognized by canonical sorting of quarks (handles permutations).
+ *  - Merge logic remains on drop (mouseup), not while dragging.
+ ****************************/
+
+// Grab references to main elements
+const simulationArea = document.getElementById('simulation-area');
+const mergeModal = document.getElementById('mergeModal');
+const mergeYesBtn = document.getElementById('mergeYes');
+const mergeCancelBtn = document.getElementById('mergeCancel');
+const knownParticlesModal = document.getElementById('knownParticlesModal');
+const knownParticlesBtn = document.getElementById('knownParticlesButton');
+const closeKnownParticlesBtn = document.getElementById('closeKnownParticles');
+const sparklesInfoModal = document.getElementById('sparklesInfoModal');
+const sparklesInfoBtn = document.getElementById('sparklesInfoButton');
+const closeSparklesInfoBtn = document.getElementById('closeSparklesInfo');
+const clearBoardBtn = document.getElementById('clearButton');
+const sparklesContainer = document.getElementById('sparkles-container');
+
+// Store references to all draggable quarks/particles
+let draggables = [];
+// For the modal: track which two items we’re about to merge
+let mergeCandidates = { item1: null, item2: null };
+
+/**
+ * Sorts an array of quarks/antiquarks in alphabetical order, then joins with '+'.
+ * This ensures any permutation is recognized as the same composition.
+ */
+function canonicalizeQuarks(arr) {
+  // Example: ["Up","Down"] => ["Down","Up"] => "Down+Up"
+  return arr.slice().sort().join('+');
+}
+
+/**
+ * Known compositions (in sorted form) -> Particle info
+ * Make sure each key is the alphabetical sort of its quarks.
+ * e.g. "Down+Up+Up" for Proton (any permutation recognized).
+ */
+const knownParticlesMap = {
+  // Mesons (2 quarks)
+  "Anti-Down+Down": { name: "π0", cssClass: "pi-zero" },
+  "Anti-Down+Up":   { name: "π+",  cssClass: "pi-plus" },
+  "Anti-Up+Down":   { name: "π-",  cssClass: "pi-minus" },
+  "Anti-Up+Up":     { name: "π0",  cssClass: "pi-zero" },
+  "Anti-Charm+Charm": { name: "J/ψ", cssClass: "jpsi" },
+  "Anti-Strange+Strange": { name: "φ", cssClass: "phi" },
+
+  // Baryons (3 quarks)
+  "Down+Down+Down": { name: "Delta-", cssClass: "delta-minus" },
+  "Down+Down+Up":   { name: "Neutron", cssClass: "neutron" },
+  "Down+Strange+Up":{ name: "Lambda", cssClass: "lambda" },
+  "Down+Up+Up":     { name: "Proton", cssClass: "proton" },
+  "Up+Up+Up":       { name: "Delta++", cssClass: "delta-plus-plus" },
+};
+
+// ----------------- CREATE QUARKS -----------------
+
+document.querySelectorAll('.create-quark').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.getAttribute('data-type');
+    createQuark(type);
+  });
+});
+
+/**
+ * Creates a new quark in the simulation area.
+ * @param {string} type - e.g. "Up", "Down", "Anti-Strange"
+ */
+function createQuark(type) {
+  const quark = document.createElement('div');
+  quark.classList.add('draggable', 'quark');
+  quark.dataset.type = type;
+  quark.textContent = type;
+
+  // Random initial position
+  const rect = simulationArea.getBoundingClientRect();
+  const x = Math.random() * (rect.width - 60);
+  const y = Math.random() * (rect.height - 60);
+  quark.style.left = x + 'px';
+  quark.style.top = y + 'px';
+
+  enableDragging(quark);
+  simulationArea.appendChild(quark);
+  draggables.push(quark);
+}
+
+// ----------------- DRAGGING LOGIC -----------------
+
+function enableDragging(element) {
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDragging = false;
+
+  element.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    element.style.zIndex = 9999;
+    const rect = element.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const simRect = simulationArea.getBoundingClientRect();
+    let left = e.clientX - simRect.left - offsetX;
+    let top = e.clientY - simRect.top - offsetY;
+    element.style.left = left + 'px';
+    element.style.top = top + 'px';
+  });
+
+  document.addEventListener('mouseup', (e) => {
+    if (isDragging) {
+      isDragging = false;
+      // On drop, check if close enough to merge
+      checkForMerge(element);
     }
   });
-  
+}
+
+/**
+ * Checks if an element (on drop) is close enough to any other element to prompt a merge.
+ */
+function checkForMerge(element) {
+  // If merge modal is already visible, skip
+  if (!mergeModal.classList.contains('hidden')) return;
+
+  const rect1 = element.getBoundingClientRect();
+  for (let other of draggables) {
+    if (other === element) continue;
+    const rect2 = other.getBoundingClientRect();
+    const center1 = {
+      x: rect1.left + rect1.width / 2,
+      y: rect1.top + rect1.height / 2
+    };
+    const center2 = {
+      x: rect2.left + rect2.width / 2,
+      y: rect2.top + rect2.height / 2
+    };
+    const dist = Math.hypot(center1.x - center2.x, center1.y - center2.y);
+
+    if (dist < 50) {
+      mergeCandidates.item1 = element;
+      mergeCandidates.item2 = other;
+      showMergeModal();
+      break;
+    }
+  }
+}
+
+// ----------------- MERGING LOGIC -----------------
+
+function showMergeModal() {
+  mergeModal.classList.remove('hidden');
+}
+
+mergeYesBtn.addEventListener('click', () => {
+  mergeModal.classList.add('hidden');
+  mergeItems(mergeCandidates.item1, mergeCandidates.item2);
+  mergeCandidates.item1 = null;
+  mergeCandidates.item2 = null;
+});
+
+mergeCancelBtn.addEventListener('click', () => {
+  mergeModal.classList.add('hidden');
+  mergeCandidates.item1 = null;
+  mergeCandidates.item2 = null;
+});
+
+/**
+ * Merges two draggable items into a new particle.
+ * @param {HTMLElement} item1 
+ * @param {HTMLElement} item2 
+ */
+function mergeItems(item1, item2) {
+  // Capture positions before removal
+  const rect1 = item1.getBoundingClientRect();
+  const rect2 = item2.getBoundingClientRect();
+  const simRect = simulationArea.getBoundingClientRect();
+
+  // Build combined composition
+  let comp1 = item1.dataset.composition || item1.dataset.type;
+  let comp2 = item2.dataset.composition || item2.dataset.type;
+  let compArr1 = comp1.split('+');
+  let compArr2 = comp2.split('+');
+  let mergedArray = compArr1.concat(compArr2);
+
+  if (mergedArray.length > 5) {
+    alert("Cannot merge: resulting particle would exceed 5 constituents!");
+    return;
+  }
+
+  // Canonical form so permutations match known map
+  const newKey = canonicalizeQuarks(mergedArray);
+
+  // Remove old items from DOM & tracking
+  item1.remove();
+  item2.remove();
+  draggables = draggables.filter(el => el !== item1 && el !== item2);
+
+  // Create the new merged particle
+  const newParticle = document.createElement('div');
+  newParticle.classList.add('draggable', 'particle');
+  newParticle.dataset.composition = mergedArray.join('+'); // For display
+
+  // Check if recognized
+  const knownInfo = knownParticlesMap[newKey];
+  if (knownInfo) {
+    newParticle.textContent = knownInfo.name + " : " + mergedArray.join('+');
+    newParticle.classList.add(knownInfo.cssClass);
+  } else {
+    newParticle.textContent = "Unknown : " + mergedArray.join('+');
+  }
+
+  // Position at midpoint
+  const center1X = rect1.left + rect1.width / 2;
+  const center1Y = rect1.top + rect1.height / 2;
+  const center2X = rect2.left + rect2.width / 2;
+  const center2Y = rect2.top + rect2.height / 2;
+  const midX = (center1X + center2X) / 2;
+  const midY = (center1Y + center2Y) / 2;
+
+  newParticle.style.left = (midX - simRect.left) + 'px';
+  newParticle.style.top = (midY - simRect.top) + 'px';
+  newParticle.style.transform = 'translate(-50%, -50%)';
+
+  enableDragging(newParticle);
+  simulationArea.appendChild(newParticle);
+  draggables.push(newParticle);
+}
+
+// ----------------- CLEAR BOARD -----------------
+clearBoardBtn.addEventListener('click', () => {
+  draggables.forEach(el => el.remove());
+  draggables = [];
+});
+
+// ----------------- KNOWN PARTICLES MODAL -----------------
+knownParticlesBtn.addEventListener('click', () => {
+  knownParticlesModal.classList.remove('hidden');
+});
+closeKnownParticlesBtn.addEventListener('click', () => {
+  knownParticlesModal.classList.add('hidden');
+});
+
+// ----------------- SPARKLES INFO MODAL -----------------
+sparklesInfoBtn.addEventListener('click', () => {
+  sparklesInfoModal.classList.remove('hidden');
+});
+closeSparklesInfoBtn.addEventListener('click', () => {
+  sparklesInfoModal.classList.add('hidden');
+});
+
+// ----------------- SPARKLES FUNCTIONALITY -----------------
+
+/**
+ * Creates one sparkle at (x,y). Lives 30s, then removed.
+ */
+function createSparkle(x, y) {
+  const sparkle = document.createElement('div');
+  sparkle.classList.add('sparkle');
+  sparkle.style.left = x + 'px';
+  sparkle.style.top = y + 'px';
+  sparklesContainer.appendChild(sparkle);
+
+  // Live for 30 seconds
+  setTimeout(() => {
+    sparkle.remove();
+  }, 30000);
+}
+
+/**
+ * Generate a sparkle at a random screen position.
+ */
+function generateRandomSparkle() {
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  createSparkle(x, y);
+}
+
+// Large initial batch so it’s not empty
+for (let i = 0; i < 50; i++) {
+  generateRandomSparkle();
+}
+
+// Generate new sparkles at a slower pace (every 2s)
+setInterval(generateRandomSparkle, 2000);
