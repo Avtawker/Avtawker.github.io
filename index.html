@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Quark Simulation: Mesons &amp; Baryons</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
   <h1>Quark Simulation: Forming Mesons and Baryons</h1>
@@ -11,19 +11,20 @@
   <!-- Sparkles Info Button -->
   <button id="sparklesInfoButton" class="info-button">What are the sparkles?</button>
   
-  <!-- Collapsible instructions drop-down -->
+  <!-- Collapsible Instructions -->
   <details>
     <summary>Instructions</summary>
     <ul>
       <li>Click any of the quark or antiquark buttons to generate a quark.</li>
       <li>Drag and drop the quarks within the simulation area.</li>
-      <li>When two quarks (or particles) are close enough, a card will pop up asking if you want to merge them.</li>
+      <li>When you drop a quark/particle near another (within 50px), a card will pop up asking if you want to merge them.</li>
       <li>If the merged combination forms a known meson or baryon, it will display the particle's name along with its full quark composition.</li>
-      <li>If the combination is not recognized, it will be labeled as "unknown."</li>
+      <li>If the combination is not recognized, it will be labeled as "Unknown".</li>
       <li>You can merge up to 5 quarks per particle and have up to 5 particles on the board.</li>
     </ul>
   </details>
   
+  <!-- Control Panel -->
   <div id="controls">
     <h2>Create Quark / Antiquark</h2>
     <!-- First row: Quark buttons with full names -->
@@ -41,7 +42,7 @@
       <button class="create-quark" data-type="Anti-Top">Anti-Top</button>
       <button class="create-quark" data-type="Anti-Bottom">Anti-Bottom</button>
     </div>
-    <!-- Second row: Extra controls -->
+    <!-- Second row: Additional controls -->
     <div class="button-row">
       <button id="clearButton">Clear Board</button>
       <button id="knownParticlesButton">Known Particles</button>
@@ -54,7 +55,7 @@
   <!-- Sparkles Container -->
   <div id="sparkles-container"></div>
   
-  <!-- Merge Modal Card -->
+  <!-- Merge Modal -->
   <div id="mergeModal" class="modal hidden">
     <div class="modal-content">
       <p>Merge these quarks?</p>
@@ -128,6 +129,6 @@
     </div>
   </div>
   
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
 </html>
