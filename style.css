@@ -13,23 +13,23 @@
     --light-button-hover: #e0e0e0;
     --known-button-bg: #d0d0ff;
     --known-button-hover: #b0b0ff;
-  }
+}
   
-  /* Base Styles */
-  body {
+/* Base Styles */
+body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 20px;
-  }
+}
   
-  h1, h2 {
+h1, h2 {
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  }
+}
   
-  /* Instructions Panel (Details) */
-  details {
+/* Instructions Panel (Details) */
+details {
     margin: 0 auto 10px;
     max-width: 800px;
     background: var(--panel-bg);
@@ -37,34 +37,34 @@
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  }
+}
   
-  details summary {
+details summary {
     font-weight: bold;
     cursor: pointer;
     outline: none;
-  }
+}
   
-  details ul {
+details ul {
     margin-left: 20px;
     list-style: disc;
-  }
+}
   
-  /* Controls Styling */
-  #controls {
+/* Controls Styling */
+#controls {
     margin-bottom: 10px;
     text-align: center;
-  }
+}
   
-  .button-row {
+.button-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 8px;
-  }
+}
   
-  /* Default button styling */
-  #controls button {
+/* Default button styling */
+#controls button {
     margin: 4px;
     padding: 10px 16px;
     font-size: 14px;
@@ -75,31 +75,30 @@
     border-radius: 12px;
     box-shadow: 0 2px 4px var(--shadow-light);
     transition: all 0.3s ease;
-  }
+}
   
-  #controls button:hover {
+#controls button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px var(--shadow-heavy);
-  }
+}
   
-  /* Lighter buttons for Clear Board and Known Particles */
-  #clearButton {
-    background-color: var(--light-button-bg);
+#clearButton {
+    background-color: #ffffff;  /* white */
     color: #121212;
-  }
-  #clearButton:hover {
-    background-color: var(--light-button-hover);
-  }
-  #knownParticlesButton {
-    background-color: var(--known-button-bg);
+}
+#clearButton:hover {
+    background-color: #f0f0f0;
+}
+#knownParticlesButton {
+    background-color: #e6e6ff;  /* very light blue */
     color: #121212;
-  }
-  #knownParticlesButton:hover {
-    background-color: var(--known-button-hover);
-  }
+}
+#knownParticlesButton:hover {
+    background-color: #d0d0ff;
+}
   
-  /* Beautified Info Button ("What are the sparkles?") */
-  .info-button {
+/* Beautified Info Button ("What are the sparkles?") */
+.info-button {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -111,14 +110,14 @@
     border: none;
     box-shadow: 0 2px 4px var(--shadow-light);
     transition: background-color 0.3s ease, transform 0.3s ease;
-  }
-  .info-button:hover {
+}
+.info-button:hover {
     background-color: #ffec8b;
     transform: translateY(-2px);
-  }
+}
   
-  /* Simulation Area */
-  #simulation-area {
+/* Simulation Area */
+#simulation-area {
     position: relative;
     width: 100%;
     max-width: 800px;
@@ -129,90 +128,115 @@
     overflow: hidden;
     border-radius: 12px;
     box-shadow: 0 4px 12px var(--shadow-heavy);
-  }
+}
   
-  /* Draggable Items (Quarks & Particles) */
-  /* Removed strict borders and added fuzzy glow for a softer look */
-  .draggable {
+/* Draggable Items (Quarks & Particles) */
+.draggable {
     position: absolute;
-    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* Make the shape resize to text length */
+    width: auto;
+    height: auto;
     min-width: 40px;
     min-height: 40px;
-    line-height: 20px;
-    text-align: center;
-    border: none;
-    border-radius: 50%;
+    padding: 8px;
+    border-radius: 9999px; /* fully round/oval shape */
+    
+    background-color: rgba(248, 215, 218, 0.8);
+    filter: blur(0.3px);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    
+    /* Keep text on one line so it doesn’t leak out */
+    white-space: nowrap;
+    
+    /* Wobble animation for dynamic movement */
+    animation: wobble 2s infinite;
+    
+    color: #fff;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.8),
+                 0 0 6px rgba(255, 255, 255, 0.8);
+    font-size: 0.85em;
+    transition: transform 0.3s ease;
     cursor: move;
     user-select: none;
-    color: var(--text-color);
-    background-color: rgba(248, 215, 218, 0.8);
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-    filter: blur(0.3px);
-  }
-  
-  /* Wobble Animation for Dynamic Movement */
-  @keyframes wobble {
+}
+
+/* Wobble Animation */
+@keyframes wobble {
     0% { transform: translate(0, 0); }
     25% { transform: translate(2px, -2px); }
     50% { transform: translate(-2px, 2px); }
     75% { transform: translate(2px, 2px); }
     100% { transform: translate(0, 0); }
-  }
+}
   
-  /* Known Particle Styles with Glow (Industry Standard Colors) */
-  .pi-plus {
-    background-color: rgba(255, 182, 193, 0.7);
-    box-shadow: 0 0 15px rgba(255,105,180,0.8);
-  }
+/* Known Particle Unique Colors & Readable Text */
+.pi-plus {
+    background-color: rgba(255, 182, 193, 0.7); /* light pink */
+    box-shadow: 0 0 10px rgba(255,105,180,0.8);
+    color: #121212;
+}
+.pi-minus {
+    background-color: rgba(173, 216, 230, 0.7); /* light blue */
+    box-shadow: 0 0 10px rgba(135,206,235,0.8);
+    color: #121212;
+}
+.pi-zero {
+    background-color: rgba(211, 211, 211, 0.7); /* light gray */
+    box-shadow: 0 0 10px rgba(169,169,169,0.8);
+    color: #121212;
+}
+.jpsi {
+    background-color: rgba(100, 149, 237, 0.7); /* cornflower blue */
+    box-shadow: 0 0 10px rgba(65,105,225,0.8);
+    color: #fff;
+}
+.phi {
+    background-color: rgba(221, 160, 221, 0.7); /* plum */
+    box-shadow: 0 0 10px rgba(186,85,211,0.8);
+    color: #121212;
+}
+.proton {
+    background-color: rgba(255, 204, 203, 0.7); /* light red */
+    box-shadow: 0 0 10px rgba(255,0,0,0.8);
+    color: #121212;
+}
+.neutron {
+    background-color: rgba(240, 230, 140, 0.7); /* khaki */
+    box-shadow: 0 0 10px rgba(255,215,0,0.8);
+    color: #121212;
+}
+.delta-plus-plus {
+    background-color: rgba(255, 165, 0, 0.7); /* orange */
+    box-shadow: 0 0 10px rgba(255,140,0,0.8);
+    color: #121212;
+}
+.delta-minus {
+    background-color: rgba(255, 99, 71, 0.7); /* tomato */
+    box-shadow: 0 0 10px rgba(255,69,0,0.8);
+    color: #fff;
+}
+.lambda {
+    background-color: rgba(230, 230, 250, 0.7); /* lavender */
+    box-shadow: 0 0 10px rgba(147,112,219,0.8);
+    color: #121212;
+}
   
-  .pi-minus {
-    background-color: rgba(173, 216, 230, 0.7);
-    box-shadow: 0 0 15px rgba(135,206,235,0.8);
-  }
+/* Individual Quark Colors */
+.quark[data-type="Up"] { background-color: #a0c4ff; color: #121212; }
+.quark[data-type="Down"] { background-color: #ffadad; color: #121212; }
+.quark[data-type="Charm"] { background-color: #ffd6a5; color: #121212; }
+.quark[data-type="Strange"] { background-color: #fdffb6; color: #121212; }
+.quark[data-type="Top"] { background-color: #caffbf; color: #121212; }
+.quark[data-type="Bottom"] { background-color: #9bf6ff; color: #121212; }
+/* For anti-quarks */
+.quark[data-type^="Anti-"] { background-color: #d3d3d3; color: #121212; }
   
-  .pi-zero {
-    background-color: rgba(211, 211, 211, 0.7);
-    box-shadow: 0 0 15px rgba(169,169,169,0.8);
-  }
-  
-  .jpsi {
-    background-color: rgba(100, 149, 237, 0.7);
-    box-shadow: 0 0 15px rgba(65,105,225,0.8);
-  }
-  
-  .phi {
-    background-color: rgba(221, 160, 221, 0.7);
-    box-shadow: 0 0 15px rgba(186,85,211,0.8);
-  }
-  
-  .proton {
-    background-color: rgba(255, 204, 203, 0.7);
-    box-shadow: 0 0 15px rgba(255,0,0,0.8);
-  }
-  
-  .neutron {
-    background-color: rgba(240, 230, 140, 0.7);
-    box-shadow: 0 0 15px rgba(255,215,0,0.8);
-  }
-  
-  .delta-plus-plus {
-    background-color: rgba(255, 165, 0, 0.7);
-    box-shadow: 0 0 15px rgba(255,140,0,0.8);
-  }
-  
-  .delta-minus {
-    background-color: rgba(255, 99, 71, 0.7);
-    box-shadow: 0 0 15px rgba(255,69,0,0.8);
-  }
-  
-  .lambda {
-    background-color: rgba(230, 230, 250, 0.7);
-    box-shadow: 0 0 15px rgba(147,112,219,0.8);
-  }
-  
-  /* Modal Styling (for Merge, Known Particles, and Sparkles Info) */
-  .modal {
+/* Modal Styling (Merge, Known Particles, Sparkles Info) */
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -223,13 +247,13 @@
     align-items: center;
     justify-content: center;
     z-index: 2000;
-  }
+}
   
-  .modal.hidden {
+.modal.hidden {
     display: none;
-  }
+}
   
-  .modal-content {
+.modal-content {
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -238,23 +262,23 @@
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
     animation: fadeIn 0.3s ease-out;
-  }
+}
   
-  .modal-content h3 {
+.modal-content h3 {
     margin-top: 0;
-  }
+}
   
-  .modal-content p {
+.modal-content p {
     margin-bottom: 20px;
     font-size: 16px;
-  }
+}
   
-  .modal-buttons {
+.modal-buttons {
     display: flex;
     justify-content: space-around;
-  }
+}
   
-  .modal-buttons button {
+.modal-buttons button {
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
@@ -263,36 +287,36 @@
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
     box-shadow: 0 2px 4px var(--shadow-light);
-  }
+}
   
-  .modal-buttons button:hover {
+.modal-buttons button:hover {
     background-color: var(--button-hover);
     transform: translateY(-2px);
-  }
+}
   
-  /* Fade In Animation for Modal */
-  @keyframes fadeIn {
+/* Fade In Animation for Modal */
+@keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
-  }
+}
   
-  /* Known Particles Modal Specifics */
-  .known-particle {
+/* Known Particles Modal Specifics */
+.known-particle {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-  }
+}
   
-  .known-particle img {
+.known-particle img {
     width: 40px;
     height: 40px;
     margin-right: 10px;
     border-radius: 50%;
     box-shadow: 0 2px 4px var(--shadow-light);
-  }
+}
   
-  /* Sparkles Container & Sparkles Animation */
-  #sparkles-container {
+/* Sparkles Container & Sparkles Animation */
+#sparkles-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -301,9 +325,9 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 1000;
-  }
+}
   
-  .sparkle {
+.sparkle {
     position: absolute;
     width: 6px;
     height: 6px;
@@ -311,92 +335,12 @@
     border-radius: 50%;
     opacity: 0.8;
     box-shadow: 0 0 6px var(--accent-color);
-    animation: sparkleMove 5s linear infinite;
-  }
-
-/* Draggable Items (Quarks & Particles) */
-.draggable {
-    position: absolute;
-    /* Use inline-flex so text naturally wraps without clipping */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* Some padding to give room around text */
-    padding: 8px;
-    
-    /* Let shape expand as needed */
-    min-width: 40px;   /* ensures a minimum size */
-    max-width: 120px;  /* prevents it from becoming too wide */
-    
-    /* Remove hidden overflow to avoid text clipping */
-    overflow: visible;
-    
-    /* Make it “roundish” (circle if short text, ellipse if longer) */
-    border-radius: 50%;
-    
-    /* Soft fuzzy background */
-    background-color: rgba(248, 215, 218, 0.8);
-    filter: blur(0.3px);
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-    
-    /* White text with glow for readability */
-    color: #fff;
-    text-shadow: 0 0 4px rgba(255, 255, 255, 0.8),
-                 0 0 6px rgba(255, 255, 255, 0.8);
-    font-size: 0.85em;
-    
-    /* Allow wrapping and break lines if text is long */
-    white-space: normal;
-    word-break: break-word;
-    
-    /* Some transition for drag/hover niceties */
-    transition: transform 0.3s ease;
-    cursor: move;
-    user-select: none;
-  }
+    animation: sparkleMove 10s linear infinite; /* Slower float if desired */
+}
   
-  /* Additional styling for merged (multi-quark) particles */
-  .draggable.particle {
-    /* Slightly smaller or adjust as needed */
-    font-size: 0.75em;
-    padding: 8px;
-    position: relative; /* for the lamp effect ::before */
-  }
-  
-  /* Lamp-style glow (360°) around the particle */
-  .draggable.particle::before {
-    content: "";
-    position: absolute;
-    
-    /* Place the glow centered on the particle */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    /* Expand beyond the particle’s size to create a soft halo */
-    width: 200%;
-    height: 200%;
-    
-    /* Radial gradient for lamp effect */
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.3) 20%,
-      rgba(255, 255, 255, 0) 80%
-    );
-    
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: -1; /* behind the particle text */
-  }
-  
-  
-  
-  
-  /* Keyframes for sparkles floating around */
-  @keyframes sparkleMove {
+/* Keyframes for Sparkles */
+@keyframes sparkleMove {
     0% { transform: translate(0, 0) scale(0.8); opacity: 0.8; }
     50% { transform: translate(20px, -20px) scale(1.2); opacity: 0.4; }
     100% { transform: translate(0, 0) scale(0.8); opacity: 0.8; }
-  }
-  
+}
